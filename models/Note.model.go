@@ -52,7 +52,7 @@ type CreateNoteSchema struct {
 	Title     string `json:"title" validate:"required"`
 	Content   string `json:"content" validate:"required"`
 	Category  string `json:"category,omitempty"`
-	Published string `json:"published,omitempty"`
+	Published bool   `json:"published,omitempty"`
 }
 
 type UpdateNoteSchema struct {
