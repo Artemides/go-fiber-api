@@ -3,8 +3,13 @@ package main
 import (
 	"log"
 
+	"github.com/Artemides/go-fiber-api/initializers"
 	"github.com/gofiber/fiber/v2"
 )
+
+func init() {
+	initializers.ConnectDB()
+}
 
 func main() {
 	app := fiber.New()
