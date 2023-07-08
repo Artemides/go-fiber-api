@@ -6,14 +6,13 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
+func main() {
+	app := fiber.New()
 
-func main()  {
-	app:=fiber.New();
-
-	app.Get("/api/health",func (c *fiber.Ctx) error  {
+	app.Get("/api/greetings", func(c *fiber.Ctx) error {
 		return c.Status(200).JSON(fiber.Map{
-			"status":"Alles Gut",
-			"message":"Hezlich Willkommen to GO",
+			"status":  "alles ok",
+			"message": "Welcome",
 		})
 	})
 
