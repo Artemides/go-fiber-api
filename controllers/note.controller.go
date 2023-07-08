@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"strconv"
 	"strings"
 	"time"
 
@@ -39,4 +40,21 @@ func CreateNoteHandler(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusBadGateway).JSON(fiber.Map{"status": "error", "message": result.Error.Error()})
 	}
 	return c.Status(fiber.StatusCreated).JSON(fiber.Map{"status": "success", "data": fiber.Map{"note": newNote}})
+}
+
+func FindNotes(c *fiber.Ctx) error {
+	page := c.Query("page", "1")
+	limit := c.Query("limit", "10")
+	intPage, _ := strconv.Atoi(page)
+	intLimit, _ := strconv.Atoi(limit)
+	offset := (intPage - 1) * intLimit
+
+	var notes []models.Note
+	response := initializers.DB.Limit(intLimit).Offset(offset).Find(&notes)
+
+	if response.Error != nil {
+		return c.Status(fiber.StatusBadGateway).JSON(fiber.Map{"stauts": "error", "message": response.Error.Error()})
+	}
+
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{"status": "success", "results": len(notes), "data": notes})
 }
