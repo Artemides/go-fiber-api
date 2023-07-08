@@ -58,7 +58,7 @@ func FindNotes(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusBadGateway).JSON(fiber.Map{"stauts": "error", "message": response.Error.Error()})
 	}
 
-	return c.Status(fiber.StatusOK).JSON(fiber.Map{"status": "success", "results": len(notes), "data": notes})
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{"status": "success", "results": len(notes), "data": fiber.Map{"notes": notes}})
 }
 
 func FindNote(c *fiber.Ctx) error {
@@ -76,5 +76,46 @@ func FindNote(c *fiber.Ctx) error {
 	}
 
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{"status": "success", "data": note})
+
+}
+
+func UpdateNote(c *fiber.Ctx) error {
+	noteId := c.Params("noteId")
+
+	var payload *models.UpdateNoteSchema
+
+	if err := c.BodyParser(&payload); err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"status": "failed", "message": err.Error()})
+	}
+
+	var note models.Note
+	response := initializers.DB.First(&note, "Id = ?", noteId)
+
+	if err := response.Error; err != nil {
+		if err == gorm.ErrRecordNotFound {
+			return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"status": "not found", "message": fmt.Sprintf("Note %v does not exist", noteId)})
+		}
+		return c.Status(fiber.StatusBadGateway).JSON(fiber.Map{"status": "fail", "message": err.Error()})
+	}
+
+	noteUpdates := make(map[string]interface{})
+
+	if payload.Title != "" {
+		noteUpdates["title"] = payload.Title
+	}
+	if payload.Content != "" {
+		noteUpdates["content"] = payload.Content
+	}
+	if payload.Category != "" {
+		noteUpdates["category"] = payload.Category
+	}
+	if payload.Published != nil {
+		noteUpdates["published"] = payload.Published
+	}
+	noteUpdates["updatedAt"] = time.Now()
+
+	initializers.DB.Model(&note).Updates(noteUpdates)
+
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{"status": "success", "data": fiber.Map{"data": note}})
 
 }
