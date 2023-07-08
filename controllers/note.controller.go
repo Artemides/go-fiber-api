@@ -89,7 +89,7 @@ func UpdateNote(c *fiber.Ctx) error {
 	}
 
 	var note models.Note
-	response := initializers.DB.First(&note, "Id = ?", noteId)
+	response := initializers.DB.First(&note, "id = ?", noteId)
 
 	if err := response.Error; err != nil {
 		if err == gorm.ErrRecordNotFound {
@@ -118,4 +118,18 @@ func UpdateNote(c *fiber.Ctx) error {
 
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{"status": "success", "data": fiber.Map{"data": note}})
 
+}
+
+func DeleteNote(c *fiber.Ctx) error {
+	noteId := c.Params("noteId")
+
+	response := initializers.DB.Delete(&models.Note{}, "id = ? ", noteId)
+
+	if response.RowsAffected == 0 {
+		msg := fmt.Sprintf("Note %v does not exists to be removed", noteId)
+		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"status": "not found", "message": msg})
+	} else if response.Error != nil {
+		return c.Status(fiber.StatusBadGateway).JSON(fiber.Map{"status": "erro", "message": response.Error.Error()})
+	}
+	return c.SendStatus(fiber.StatusNoContent)
 }
