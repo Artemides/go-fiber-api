@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"fmt"
 	"strconv"
 	"strings"
 	"time"
@@ -8,6 +9,7 @@ import (
 	"github.com/Artemides/go-fiber-api/initializers"
 	"github.com/Artemides/go-fiber-api/models"
 	"github.com/gofiber/fiber/v2"
+	"gorm.io/gorm"
 )
 
 func CreateNoteHandler(c *fiber.Ctx) error {
@@ -57,4 +59,22 @@ func FindNotes(c *fiber.Ctx) error {
 	}
 
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{"status": "success", "results": len(notes), "data": notes})
+}
+
+func FindNote(c *fiber.Ctx) error {
+	noteId := c.Params("noteId")
+
+	var note models.Note
+
+	response := initializers.DB.First(&note, "id = ?", noteId)
+
+	if err := response.Error; err != nil {
+		if err == gorm.ErrRecordNotFound {
+			return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"status": "not found", "message": fmt.Sprintf("Note %v does not exist", noteId)})
+		}
+		return c.Status(fiber.StatusBadGateway).JSON(fiber.Map{"status": "fail", "message": err.Error()})
+	}
+
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{"status": "success", "data": note})
+
 }
