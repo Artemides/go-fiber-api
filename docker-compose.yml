@@ -5,7 +5,7 @@ services:
     image: mysql:lests
     container_name: mysql
     env_file:
-      - ./app.env
+      - ./.env
     ports:
       - "6500:3306"
     volumes:
