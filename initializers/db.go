@@ -7,21 +7,20 @@ import (
 
 	"github.com/Artemides/go-fiber-api/models"
 	"github.com/spf13/viper"
-	"gorm.io/driver/mysql"
+	"gorm.io/driver/postgres"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
 )
 
 var DB *gorm.DB
-var MYSQL *gorm.DB
 
 type Config struct {
-	DBHost         string `mapstructure:"MYSQL_ROOT_HOST"`
-	DBUserName     string `mapstructure:"MYSQL_USER"`
-	DBUserPassword string `mapstructure:"MYSQL_ROOT_PASSWORD"`
-	DBName         string `mapstructure:"MYSQL_DB"`
-	DBPort         string `mapstructure:"MYSQL_PORT"`
+	DBHost         string `mapstructure:"POSTGRES_HOST"`
+	DBUserName     string `mapstructure:"POSTGRES_USER"`
+	DBUserPassword string `mapstructure:"POSTGRES_PASSWORD"`
+	DBName         string `mapstructure:"POSTGRES_DB"`
+	DBPort         string `mapstructure:"POSTGRES_PORT"`
 	ClientOrigin   string `mapstructure:"CLIENT_ORIGIN"`
 }
 
@@ -42,21 +41,21 @@ func ConnectDB() {
 
 }
 
-func ConnectMySQLDB(config *Config) {
+func ConnectPostgres(config *Config) {
 	var err error
-	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=True&loc=Local", config.DBUserName, config.DBUserPassword, config.DBHost, config.DBPort, config.DBName)
+	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=disable", config.DBHost, config.DBUserName, config.DBUserPassword, config.DBName, config.DBPort)
 
 	fmt.Println("dsn ", dsn)
-	MYSQL, err = gorm.Open(mysql.Open(dsn), &gorm.Config{})
+	DB, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
 
 	if err != nil {
-		log.Fatal("Failed to Connect MYSQL\n", err.Error())
+		log.Fatal("Failed to Connect Postgress\n", err.Error())
 		os.Exit(1)
 	}
-
-	MYSQL.Logger = logger.Default.LogMode(logger.Info)
+	DB.Exec("CREATE EXTENSION IF NOT EXISTS \"uuid-ossp\"")
+	DB.Logger = logger.Default.LogMode(logger.Info)
 	log.Println("Running Migrations")
-	MYSQL.AutoMigrate(&models.Note{})
+	DB.AutoMigrate(&models.Note{})
 	log.Println("🚀 Connection Successfully DB")
 }
 

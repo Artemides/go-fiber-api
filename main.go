@@ -21,7 +21,7 @@ func init() {
 		os.Exit(1)
 	}
 
-	initializers.ConnectMySQLDB(&config)
+	initializers.ConnectPostgres(&config)
 }
 
 func main() {

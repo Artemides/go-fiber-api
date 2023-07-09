@@ -5,13 +5,12 @@ import (
 
 	"github.com/go-playground/validator/v10"
 	"github.com/google/uuid"
-	"gorm.io/gorm"
 )
 
 var validate = validator.New()
 
 type Note struct {
-	ID        string    `gorm:"type:char(36);primary_key" json:"id,omitempty"`
+	ID        uuid.UUID `gorm:"type:char(36);primary_key" json:"id,omitempty"`
 	Title     string    `gorm:"type:varchar(255);uniqueIndex:idx_notes_title,LENGTH(255);not null" json:"title,omitempty"`
 	Content   string    `gorm:"not null" json:"content,omitempty"`
 	Category  string    `gorm:"type:varchar(255)" json:"category,omitempty"`
@@ -20,10 +19,10 @@ type Note struct {
 	UpdatedAt time.Time `gorm:"not null;default:'1970-01-01 00:00:01';ON UPDATE CURRENT_TIMESTAMP" json:"updatedAt,omitempty"`
 }
 
-func (note *Note) BeforeCreate(tx *gorm.DB) (err error) {
-	note.ID = uuid.New().String()
-	return nil
-}
+// func (note *Note) BeforeCreate(tx *gorm.DB) (err error) {
+// 	note.ID = uuid.New().String()
+// 	return nil
+// }
 
 type ErrorResponse struct {
 	Field string `json:"field"`
