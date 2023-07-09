@@ -21,7 +21,7 @@ func main() {
 	app.Mount("/api", micro)
 	app.Use(logger.New())
 	app.Use(cors.New(cors.Config{
-		AllowOrigins:     "http://localhost:300",
+		AllowOrigins:     "http://localhost:3000",
 		AllowHeaders:     "Origin, Content-Type, Accept",
 		AllowMethods:     "GET, POST, PATCH, DELETE",
 		AllowCredentials: true,
@@ -31,6 +31,7 @@ func main() {
 		router.Get("", controllers.FindNotes)
 		router.Post("/", controllers.CreateNoteHandler)
 	})
+
 	micro.Route("/note/:noteId", func(router fiber.Router) {
 		router.Get("", controllers.FindNote)
 		router.Patch("", controllers.UpdateNote)
