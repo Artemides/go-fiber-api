@@ -2,6 +2,7 @@ package main
 
 import (
 	"log"
+	"os"
 
 	"github.com/Artemides/go-fiber-api/controllers"
 	"github.com/Artemides/go-fiber-api/initializers"
@@ -11,7 +12,16 @@ import (
 )
 
 func init() {
-	initializers.ConnectDB()
+	// initializers.ConnectDB()
+
+	config, err := initializers.LoadConfig(".")
+
+	if err != nil {
+		log.Fatalln("failed to load env vars", err.Error())
+		os.Exit(1)
+	}
+
+	initializers.ConnectMySQLDB(&config)
 }
 
 func main() {

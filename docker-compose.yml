@@ -1,15 +1,21 @@
-version: "3"
+version: "3.8"
 
 services:
-  mysql:
-    image: mysql:lests
-    container_name: mysql
+  potsgres:
+    image: postgres:latest
+    container_name: postgres
     env_file:
-      - ./.env
+      - ./app.env
     ports:
-      - "6500:3306"
+      - "6500:5432"
     volumes:
-      - mysqlDB: /var/lib/mysql
-
+      - postgresDB:/data/postgres
+  pgAdmin:
+    image: dpage/pgadmin4
+    container_name: pgAdmin
+    env_file:
+      - ./app.env
+    ports:
+      - "5050:80"
 volumes:
-  mysqlDB:
+  postgresDB:
