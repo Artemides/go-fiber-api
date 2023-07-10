@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"time"
 
 	"github.com/Artemides/go-fiber-api/models"
 	"github.com/spf13/viper"
@@ -22,6 +23,10 @@ type Config struct {
 	DBName         string `mapstructure:"POSTGRES_DB"`
 	DBPort         string `mapstructure:"POSTGRES_PORT"`
 	ClientOrigin   string `mapstructure:"CLIENT_ORIGIN"`
+
+	JwtSecret    string        `mapstructure:"JTW_SECRET"`
+	JwtExpiredIn time.Duration `mapstructure:"JWT_EXPIRED_IN"`
+	JwtMaxAge    int           `mapstructure:"JWT_MAXAGE"`
 }
 
 func ConnectDB() {
