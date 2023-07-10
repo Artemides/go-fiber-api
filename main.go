@@ -36,6 +36,9 @@ func main() {
 		AllowMethods:     "GET, POST, PATCH, DELETE",
 		AllowCredentials: true,
 	}))
+	micro.Route("/auth", func(router fiber.Router) {
+		router.Post("/signup", controllers.SignUp)
+	})
 
 	micro.Route("/notes", func(router fiber.Router) {
 		router.Get("", controllers.FindNotes)
