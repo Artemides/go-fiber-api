@@ -5,6 +5,7 @@ import (
 
 	"github.com/go-playground/validator/v10"
 	"github.com/google/uuid"
+	"gorm.io/gorm"
 )
 
 var validate = validator.New()
@@ -19,10 +20,10 @@ type Note struct {
 	UpdatedAt time.Time `gorm:"not null;default:'1970-01-01 00:00:01';ON UPDATE CURRENT_TIMESTAMP" json:"updatedAt,omitempty"`
 }
 
-// func (note *Note) BeforeCreate(tx *gorm.DB) (err error) {
-// 	note.ID = uuid.New().String()
-// 	return nil
-// }
+func (note *Note) BeforeCreate(tx *gorm.DB) (err error) {
+	note.ID = uuid.New()
+	return nil
+}
 
 type ErrorResponse struct {
 	Field string `json:"field"`
