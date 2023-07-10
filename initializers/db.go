@@ -60,7 +60,7 @@ func ConnectPostgres(config *Config) {
 	DB.Exec("CREATE EXTENSION IF NOT EXISTS \"uuid-ossp\"")
 	DB.Logger = logger.Default.LogMode(logger.Info)
 	log.Println("Running Migrations")
-	DB.AutoMigrate(&models.Note{})
+	DB.AutoMigrate(&models.Note{}, &models.User{})
 	log.Println("🚀 Connection Successfully DB")
 }
 

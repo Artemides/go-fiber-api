@@ -13,7 +13,7 @@ type User struct {
 	Password  string     `gorm:"type:varchar(100);not null"`
 	Role      *string    `gorm:"type:varchar(50);default:'user';not null"`
 	Provider  *string    `gorm:"type:varchar(50);default:'local';not null"`
-	Photo     *string    `gorm:"default:'photo.png';not null"`
+	Photo     *string    `gorm:"default:'none.png';not null"`
 	Verified  *bool      `gorm:"default:false;not null"`
 	CreatedAt *time.Time `gorm:"default:now();not null"`
 	UpdatedAt *time.Time `grom:"default:now()"`
@@ -23,7 +23,7 @@ type SignUpInput struct {
 	Name            string `json:"name" validate:"required"`
 	Email           string `json:"email" validate:"required,email"`
 	Password        string `json:"password" validate:"required,min=8"`
-	ConfirmPassword string `json:"conafirmPassword" validate:"required,min=8"`
+	ConfirmPassword string `json:"conafirmPassword" validate:"required,eqfield=Password"`
 	Photo           string `json:"photo"`
 }
 
