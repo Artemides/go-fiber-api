@@ -38,6 +38,7 @@ func main() {
 	}))
 	micro.Route("/auth", func(router fiber.Router) {
 		router.Post("/signup", controllers.SignUp)
+		router.Post("/signin", controllers.SignInController)
 	})
 
 	micro.Route("/notes", func(router fiber.Router) {
