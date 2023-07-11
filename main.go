@@ -50,8 +50,8 @@ func main() {
 	})
 
 	micro.Route("/note/:noteId", func(router fiber.Router) {
-		router.Use(middleware.DeserializeUser)
 		router.Get("", controllers.FindNote)
+		router.Use(middleware.DeserializeUser)
 		router.Patch("", controllers.UpdateNote)
 		router.Delete("", controllers.DeleteNote)
 	})

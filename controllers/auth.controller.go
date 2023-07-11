@@ -83,7 +83,7 @@ func SignInController(c *fiber.Ctx) error {
 	claims["sub"] = user.ID
 	claims["exp"] = now.Add(config.JwtExpiredIn).Unix()
 	claims["iat"] = now.Unix()
-	claims["nbf"] = now.Add(config.JwtExpiredIn).Unix()
+	claims["nbf"] = now.Unix()
 
 	tokenString, err := tokenBytes.SignedString([]byte(config.JwtSecret))
 	if err != nil {
