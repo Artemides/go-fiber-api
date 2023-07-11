@@ -1,11 +1,13 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"os"
 
 	"github.com/Artemides/go-fiber-api/controllers"
 	"github.com/Artemides/go-fiber-api/initializers"
+	"github.com/Artemides/go-fiber-api/middleware"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/logger"
@@ -42,21 +44,31 @@ func main() {
 	})
 
 	micro.Route("/notes", func(router fiber.Router) {
+		router.Use(middleware.DeserializeUser)
 		router.Get("", controllers.FindNotes)
 		router.Post("/", controllers.CreateNoteHandler)
 	})
 
 	micro.Route("/note/:noteId", func(router fiber.Router) {
+		router.Use(middleware.DeserializeUser)
 		router.Get("", controllers.FindNote)
 		router.Patch("", controllers.UpdateNote)
 		router.Delete("", controllers.DeleteNote)
 	})
 
 	micro.Get("/api/greetings", func(c *fiber.Ctx) error {
+
 		return c.Status(200).JSON(fiber.Map{
 			"status":  "alles ok",
 			"message": "Welcome",
 		})
 	})
+
+	micro.All("*", func(c *fiber.Ctx) error {
+		path := c.Path()
+
+		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"message": fmt.Sprintf("Path: %v does not exists", path)})
+	})
+
 	log.Fatal(app.Listen(":4000"))
 }
