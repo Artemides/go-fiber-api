@@ -101,3 +101,15 @@ func SignInController(c *fiber.Ctx) error {
 	})
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{"token": tokenString})
 }
+
+func LogoutController(c *fiber.Ctx) error {
+	expires := time.Now().Add(-time.Hour * 24)
+
+	c.Cookie(&fiber.Cookie{
+		Name: "token", Value: "",
+		Expires: expires,
+	})
+
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{"status": "success"})
+
+}
