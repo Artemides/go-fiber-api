@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"fmt"
+	"log"
 	"path/filepath"
 	"strings"
 	"time"
@@ -9,15 +10,15 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-const DOMAIN = "http://localhost:4000/images/single"
+const DOMAIN = "http://localhost:4000/images/"
 
-func UploadSingleFileController(c *fiber.Ctx) error {
+func UploadFilesController(c *fiber.Ctx) error {
 	form, err := c.MultipartForm()
 	if err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"message": err})
 	}
-	files := form.File["image"]
-
+	files := form.File["images"]
+	filePaths := []string{}
 	for _, file := range files {
 		filename := file.Filename
 		fileExt := filepath.Ext(filename)
@@ -25,11 +26,14 @@ func UploadSingleFileController(c *fiber.Ctx) error {
 		now := time.Now()
 		fileName := strings.ReplaceAll(strings.ToLower(originalName), " ", "-") + "-" + fmt.Sprintf("%v", now.Unix()) + fileExt
 		filePath := DOMAIN + fileName
-
-		fmt.Println(filePath)
+		err := c.SaveFile(file, fmt.Sprintf("./public/images/%s", fileName))
+		if err != nil {
+			log.Fatal(err)
+		}
+		filePaths = append(filePaths, filePath)
 	}
 
-	return c.SendStatus(fiber.StatusOK)
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{"filePaths": filePaths})
 
 }
 

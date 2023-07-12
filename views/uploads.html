@@ -75,8 +75,8 @@
         .addEventListener("change", async (event) => {
           try {
             let formData = new FormData();
-            formData.append("image", event.target.files[0]);
-            const data = await fetch(`${SERVER_ENDPOINT}/api/uploads/single`, {
+            formData.append("images", event.target.files[0]);
+            const data = await fetch(`${SERVER_ENDPOINT}/api/uploads/images`, {
               body: formData,
               method: "POST",
             }).then((res) => res.json());
@@ -85,7 +85,7 @@
             const imgElement = document.createElement("img");
             imgHolder.classList.add("file-preview__el");
             imgElement.classList.add("file-preview__img");
-            imgElement.src = data.filepath;
+            imgElement.src = data.filePaths[0];
             imgHolder.appendChild(imgElement);
             IMAGE_PREVIEW.appendChild(imgHolder);
           } catch (error) {
@@ -103,12 +103,12 @@
               formData.append("images", event.target.files[key]);
             }
 
-            const data = await fetch(`${SERVER_ENDPOINT}/upload/multiple`, {
+            const data = await fetch(`${SERVER_ENDPOINT}/api/uploads/images`, {
               body: formData,
               method: "POST",
             }).then((res) => res.json());
 
-            data.filepaths.forEach((filepath) => {
+            data.filePaths.forEach((filepath) => {
               const imgHolder = document.createElement("div");
               const imgElement = document.createElement("img");
               imgHolder.classList.add("file-preview__el");

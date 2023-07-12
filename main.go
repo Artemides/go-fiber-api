@@ -34,6 +34,7 @@ func main() {
 	micro := fiber.New()
 
 	app.Mount("/api", micro)
+	app.Static("/", "./public")
 	app.Use(logger.New())
 	app.Use(cors.New(cors.Config{
 		AllowOrigins:     "http://localhost:3000",
@@ -59,7 +60,7 @@ func main() {
 		router.Delete("", controllers.DeleteNote)
 	})
 	micro.Route("/uploads", func(router fiber.Router) {
-		router.Post("/single", controllers.UploadSingleFileController)
+		router.Post("/images", controllers.UploadFilesController)
 		// router.Post("/multiple", controllers.DeleteNote)
 	})
 	micro.Get("/api/greetings", func(c *fiber.Ctx) error {
