@@ -9,6 +9,8 @@ import (
 	"github.com/Artemides/go-fiber-api/initializers"
 	"github.com/Artemides/go-fiber-api/middleware"
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/template/html/v2"
+
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/logger"
 )
@@ -27,7 +29,8 @@ func init() {
 }
 
 func main() {
-	app := fiber.New()
+	views := html.New("./views", ".html")
+	app := fiber.New(fiber.Config{Views: views})
 	micro := fiber.New()
 
 	app.Mount("/api", micro)
@@ -68,6 +71,10 @@ func main() {
 		path := c.Path()
 
 		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"message": fmt.Sprintf("Path: %v does not exists", path)})
+	})
+
+	app.Get("/uploads", func(c *fiber.Ctx) error {
+		return c.Render("uploads", fiber.Map{})
 	})
 
 	log.Fatal(app.Listen(":4000"))
