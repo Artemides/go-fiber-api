@@ -58,7 +58,10 @@ func main() {
 		router.Patch("", controllers.UpdateNote)
 		router.Delete("", controllers.DeleteNote)
 	})
-
+	micro.Route("/uploads", func(router fiber.Router) {
+		router.Post("/single", controllers.UploadSingleFileController)
+		// router.Post("/multiple", controllers.DeleteNote)
+	})
 	micro.Get("/api/greetings", func(c *fiber.Ctx) error {
 
 		return c.Status(200).JSON(fiber.Map{
@@ -74,7 +77,7 @@ func main() {
 	})
 
 	app.Get("/uploads", func(c *fiber.Ctx) error {
-		return c.Render("uploads", fiber.Map{})
+		return c.Status(fiber.StatusOK).Render("uploads", fiber.Map{})
 	})
 
 	log.Fatal(app.Listen(":4000"))

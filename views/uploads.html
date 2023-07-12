@@ -67,7 +67,7 @@
       </div>
     </div>
     <script>
-      const SERVER_ENDPOINT = "http://localhost:8000";
+      const SERVER_ENDPOINT = "http://localhost:4000";
       const IMAGE_PREVIEW = document.getElementById("file-preview");
       //   Upload Single Image
       document
@@ -76,7 +76,7 @@
           try {
             let formData = new FormData();
             formData.append("image", event.target.files[0]);
-            const data = await fetch(`${SERVER_ENDPOINT}/upload/single`, {
+            const data = await fetch(`${SERVER_ENDPOINT}/api/uploads/single`, {
               body: formData,
               method: "POST",
             }).then((res) => res.json());
